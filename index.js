@@ -5,7 +5,7 @@ var http = require("http"),
     format = "json",
     action,
     method,
-    controllers_cache = {},
+    ctrlrs_cache = {},
     supported_formats = {
 		json : "application/json",
 		jsonp : "application/javascript",
@@ -48,8 +48,8 @@ var listener = function(request, response){
         temp,
         dotmark,
         qmark,
-        controller_name,
-        controller_path,
+        ctrlr_name,
+        ctrlr_path,
         exists_cb;
 
     console.time("time");
@@ -69,28 +69,28 @@ var listener = function(request, response){
     }
 
     temp = url.split("/");
-    controller_name = temp[1].toLowerCase();
-    controller_path = "controllers/" + controller_name;
+    ctrlr_name = temp[1].toLowerCase();
+    ctrlr_path = "controllers/" + ctrlr_name;
 
     exists_cb = function (exists) {
-        var controller;
+        var ctrlr;
 
         temp[2] && temp[2] != "" && (action = temp[2]);
         action += "_" + method;
         if (!exists) {
-            return respond(response, {message : "controller does not exist"}, 400);
+            return respond(response, {message : "Controller '" + ctrlr_name + "' does not exist"}, 400);
         }
 
-        controller = controllers_cache[controller_name] || (controllers_cache[controller_name] = require(__dirname + "/" + controller_path));
+        ctrlr = ctrlrs_cache[ctrlr_name] || (ctrlrs_cache[ctrlr_name] = require(__dirname + "/" + ctrlr_path));
 
-        if (!controller[action]) {
-            return respond(response, {message : "action does not exist"}, 400);
+        if (!ctrlr[action]) {
+            return respond(response, {message : "Method '" + action + "' does not exist"}, 400);
         }
 
-        respond(response, controller[action](request.body));
+        respond(response, ctrlr[action](request.body));
     };
 
-    fs.exists(controller_path + ".js", exists_cb);
+    fs.exists(ctrlr_path + ".js", exists_cb);
 };
 
 http.createServer(listener).listen(config.port);
