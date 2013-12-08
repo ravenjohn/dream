@@ -23,7 +23,6 @@ var log = function(body, mode){
 };
 
 var respond = function (response, data, http_code) {
-    console.log('responding');
     http_code = http_code || 200;
     response.writeHead(http_code, {
         "Content-Type" : supported_formats[format],
@@ -41,7 +40,7 @@ var respond = function (response, data, http_code) {
     }
     response.write(""+data);
     response.end();
-    throw new Error("Interrup");
+    console.timeEnd("time");
 };
 
 var listener = function(request, response){
@@ -57,15 +56,17 @@ var listener = function(request, response){
 
     method = request.method.toLowerCase();
     action = "index";
-    
+
     ((qmark = url.indexOf("?")) != -1) && (url = url.substring(0, qmark));
-    
+
     if ((dotmark = url.indexOf(".")) != -1) {
         format = url.substring(dotmark + 1, url.length);
         url = url.substring(0, dotmark);
     }
-    
-    (url === "/") && respond(response, {message : "Wrong call"}, 403);
+
+    if (url === "/") {
+        return respond(response, {message : "Wrong call"}, 403);
+    }
 
     temp = url.split("/");
     controller_name = temp[1].toLowerCase();
@@ -73,20 +74,22 @@ var listener = function(request, response){
 
     exists_cb = function (exists) {
         var controller;
-        
+
         temp[2] && temp[2] != "" && (action = temp[2]);
         action += "_" + method;
-        console.log('haloo');
-        !exists && respond(response, {message : "controller does not exist"}, 400);
-        
-        console.log('continued');
+        if (!exists) {
+            return respond(response, {message : "controller does not exist"}, 400);
+        }
+
         controller = controllers_cache[controller_name] || (controllers_cache[controller_name] = require(__dirname + "/" + controller_path));
-        
-        !controller[action] && respond(response, {message : "action does not exist"}, 400);
-        
+
+        if (!controller[action]) {
+            return respond(response, {message : "action does not exist"}, 400);
+        }
+
         respond(response, controller[action](request.body));
     };
-    
+
     fs.exists(controller_path + ".js", exists_cb);
 };
 
