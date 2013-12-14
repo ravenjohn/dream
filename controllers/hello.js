@@ -6,7 +6,8 @@ hello.index_get = function () {
 
 
 hello.hello_get = function () {
-    return {id : "1"};
+    return {id : "24254"};
 }
 
 module.exports = hello;
+
