@@ -1,7 +1,8 @@
 var hello = {};
 
 hello.index_get = function () {
-    return {message : "hello"};
+    this.required_fields = ['name', 'sex', 'contact_number', 'birthday', 'age'];
+    return {message : "hell1"};
 }
 
 

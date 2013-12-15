@@ -5,10 +5,8 @@ var http = require("http"),
     ctrlrs_cache = {},
 
     log = function(body, mode){
-        var mode = mode || "debug",
-            date = new Date();
-        date = [date.getMonth(), date.getDay(), date.getFullYear(), mode];
-        fs.appendFile("logs/" + date.join("_") + ".log", body + "\n", function (err) {
+        var date = new Date();
+        fs.appendFile(config.logs_folder + [date.getMonth(), date.getDay(), date.getFullYear(), mode || "debug"].join("_") + ".log", body + "\n", function (err) {
             err && console.log(err);
         });
     },
@@ -37,7 +35,6 @@ var http = require("http"),
         var url = request.url,
             ctrlr_name,
             ctrlr_path,
-            holder,
             req = {
                 action : "index",
                 method : request.method.toLowerCase()
@@ -45,8 +42,8 @@ var http = require("http"),
 
         console.time("time");
 
-        ((holder = url.indexOf(".")) != -1) && (url = url.substring(0, holder));
-        ((holder = url.indexOf("?")) != -1) && (url = url.substring(0, holder));
+        ~(ctrlr_name = url.indexOf(".")) && (url = url.substring(0, ctrlr_name));
+        ~(ctrlr_name = url.indexOf("?")) && (url = url.substring(0, ctrlr_name));
 
         if (url === "/")
             return respond(response, req, {message : "Wrong call"}, 400);
@@ -57,16 +54,16 @@ var http = require("http"),
             if (err != null)
                 return respond(response, req, {message : "Controller " + ctrlr_name + " does not exist"}, 404);
 
-            if (!ctrlrs_cache[ctrlr_name] || (ctrlrs_cache[ctrlr_name].mtime != stats.mtime.toString())) {
-                delete require.cache[(__dirname + "/" + ctrlr_path + ".js").replace(/\\/g, "\\").replace(/\//g, "\\")];
+            if (!ctrlrs_cache[ctrlr_name] || (ctrlrs_cache[ctrlr_name].mtime != +stats.mtime)) {
+                delete require.cache[(__dirname + "/" + ctrlr_path + ".js").replace(/(\\|\/)/g, "\\")];
                 ctrlrs_cache[ctrlr_name] = require(__dirname + "/" + ctrlr_path);
-                ctrlrs_cache[ctrlr_name].mtime = stats.mtime.toString();
+                ctrlrs_cache[ctrlr_name].mtime = +stats.mtime;
             }
 
             url[2] && url[2] != "" && (req.action = url[2]);
 
             if (!(ctrlr = ctrlrs_cache[ctrlr_name][(req.action += "_" + req.method)]))
-                return respond(response, req, {message : "Method " + req.action + " does not exist"}, 400);
+                return respond(response, req, {message : "Method " + req.action + " does not exist"}, 404);
 
             return respond(response, req, ctrlr(request.body));
         });

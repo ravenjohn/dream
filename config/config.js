@@ -1,10 +1,12 @@
 var config = {
     "mode" : "development",
     "production": {
-        "port" : 3000
+        "port" : 80,
+        "logs_folder" : "logs/"
     },
     "development": {
-        "port" : 3000
+        "port" : 3000,
+        "logs_folder" : "logs/"
     }
 }
 
