@@ -32,6 +32,9 @@ var http = require("http"),
     },
 
     listener = function(request, response){
+        console.log(request.params);
+        console.log(request.body);
+        console.log(request.query);
         var url = request.url,
             ctrlr_name,
             ctrlr_path,
