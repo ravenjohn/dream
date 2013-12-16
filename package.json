@@ -1,12 +1,10 @@
 {
-    "name": "nodejs-restserver",
+    "name": "dream",
     "description": "Node.js JSON rest server",
     "version": "0.0.1",
     "author": "Raven Lagrimas <rjlagrimas08@gmail.com>",
     "contributors": [{ "name": "Raven Lagrimas", "email": "rjlagrimas08@gmail.com" }],
-    "dependencies":  {
-        "mongoose": "3.8.1"
-    },
+    "dependencies":  {},
     "main" : "index.js",
     "engines": { "node": ">= 0.4.10" }
 }
