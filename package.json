@@ -6,5 +6,17 @@
     "contributors": [{ "name": "Raven Lagrimas", "email": "rjlagrimas08@gmail.com" }],
     "dependencies":  {},
     "main" : "index.js",
-    "engines": { "node": ">= 0.4.10" }
+    "engines": { "node": ">= 0.4.10" },
+    "repository": {
+        "type": "git",
+        "url": "https://github.com/ravenjohn/dream.git"
+    },
+    "keywords": [
+        "JSON",
+        "REST",
+        "framework",
+        "JSON REST Server"
+    ],
+    "license": "MIT",
+    "homepage": "https://github.com/ravenjohn/dream"
 }
