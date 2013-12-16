@@ -1,14 +1,14 @@
-var hello = {};
+var r = {};
 
-hello.index_get = function () {
-    this.required_fields = ['name', 'sex', 'contact_number', 'birthday', 'age'];
+r.index_get = function () {
     return {message : "hell1"};
 }
+r.index_get.rqd_flds = ['name', 'sex', 'contact_number', 'birthday', 'age'];
 
 
-hello.hello_get = function () {
+r.r_get = function () {
     return {id : "24254"};
 }
 
-module.exports = hello;
+module.exports = r;
 
