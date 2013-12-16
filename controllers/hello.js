@@ -4,6 +4,7 @@ r.index_get = function () {
     return {message : "hell1"};
 }
 r.index_get.rqd_flds = ['name', 'sex', 'contact_number', 'birthday', 'age'];
+r.index_get.lckd_flds = ['asdf'];
 
 
 r.r_get = function () {
